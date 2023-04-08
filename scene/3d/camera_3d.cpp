@@ -174,11 +174,18 @@ Projection Camera3D::_get_camera_projection(real_t p_near) const {
 	Size2 viewport_size = get_viewport()->get_visible_rect().size;
 	Projection cm;
 
-	if (mode == PROJECTION_ORTHOGONAL) {
-		cm.set_orthogonal(size, viewport_size.aspect(), p_near, far, keep_aspect == KEEP_WIDTH);
-	} else {
-		cm.set_perspective(fov, viewport_size.aspect(), p_near, far, keep_aspect == KEEP_WIDTH);
+	switch (mode) {
+		case PROJECTION_PERSPECTIVE: {
+			cm.set_perspective(fov, viewport_size.aspect(), p_near, far, keep_aspect == KEEP_WIDTH);
+		} break;
+		case PROJECTION_ORTHOGONAL: {
+			cm.set_orthogonal(size, viewport_size.aspect(), p_near, far, keep_aspect == KEEP_WIDTH);
+		} break;
+		case PROJECTION_FRUSTUM: {
+			cm.set_frustum(size, viewport_size.aspect(), frustum_offset, p_near, far);
+		} break;
 	}
+
 	return cm;
 }
 
