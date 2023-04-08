@@ -105,6 +105,8 @@ protected:
 
 	static void _bind_methods();
 
+	Projection _get_camera_projection(real_t p_near) const;
+
 public:
 	enum {
 		NOTIFICATION_BECAME_CURRENT = 50,
