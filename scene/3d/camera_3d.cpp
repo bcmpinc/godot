@@ -170,6 +170,18 @@ Transform3D Camera3D::get_camera_transform() const {
 	return tr;
 }
 
+Projection Camera3D::get_camera_projection() const {
+	Size2 viewport_size = get_viewport()->get_visible_rect().size;
+	Projection cm;
+
+	if (mode == PROJECTION_ORTHOGONAL) {
+		cm.set_orthogonal(size, viewport_size.aspect(), near, far, keep_aspect == KEEP_WIDTH);
+	} else {
+		cm.set_perspective(fov, viewport_size.aspect(), near, far, keep_aspect == KEEP_WIDTH);
+	}
+	return cm;
+}
+
 void Camera3D::set_perspective(real_t p_fovy_degrees, real_t p_z_near, real_t p_z_far) {
 	if (!force_change && fov == p_fovy_degrees && p_z_near == near && p_z_far == far && mode == PROJECTION_PERSPECTIVE) {
 		return;
