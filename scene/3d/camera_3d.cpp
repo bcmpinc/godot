@@ -298,8 +298,7 @@ Vector3 Camera3D::project_local_ray_normal(const Point2 &p_pos) const {
 	if (mode == PROJECTION_ORTHOGONAL) {
 		ray = Vector3(0, 0, -1);
 	} else {
-		Projection cm;
-		cm.set_perspective(fov, viewport_size.aspect(), near, far, keep_aspect == KEEP_WIDTH);
+		Projection cm = get_camera_projection();
 		Vector2 screen_he = cm.get_viewport_half_extents();
 		ray = Vector3(((cpos.x / viewport_size.width) * 2.0 - 1.0) * screen_he.x, ((1.0 - (cpos.y / viewport_size.height)) * 2.0 - 1.0) * screen_he.y, -near).normalized();
 	}
@@ -345,15 +344,7 @@ bool Camera3D::is_position_behind(const Vector3 &p_pos) const {
 Vector<Vector3> Camera3D::get_near_plane_points() const {
 	ERR_FAIL_COND_V_MSG(!is_inside_tree(), Vector<Vector3>(), "Camera is not inside scene.");
 
-	Size2 viewport_size = get_viewport()->get_visible_rect().size;
-
-	Projection cm;
-
-	if (mode == PROJECTION_ORTHOGONAL) {
-		cm.set_orthogonal(size, viewport_size.aspect(), near, far, keep_aspect == KEEP_WIDTH);
-	} else {
-		cm.set_perspective(fov, viewport_size.aspect(), near, far, keep_aspect == KEEP_WIDTH);
-	}
+	Projection cm = get_camera_projection();
 
 	Vector3 endpoints[8];
 	cm.get_endpoints(Transform3D(), endpoints);
@@ -373,13 +364,7 @@ Point2 Camera3D::unproject_position(const Vector3 &p_pos) const {
 
 	Size2 viewport_size = get_viewport()->get_visible_rect().size;
 
-	Projection cm;
-
-	if (mode == PROJECTION_ORTHOGONAL) {
-		cm.set_orthogonal(size, viewport_size.aspect(), near, far, keep_aspect == KEEP_WIDTH);
-	} else {
-		cm.set_perspective(fov, viewport_size.aspect(), near, far, keep_aspect == KEEP_WIDTH);
-	}
+	Projection cm = get_camera_projection();
 
 	Plane p(get_camera_transform().xform_inv(p_pos), 1.0);
 
